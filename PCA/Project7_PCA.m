@@ -1,3 +1,11 @@
+%% Outline
+% This program loads a file called MEGATABLE_WIDE. It reads attributes from
+% line 3 till the end. If line 3 is not where your data starts you may
+% change that value. The beernames could be defined from another thing
+% goodbye
+
+
+
 %Principal component analysis for Beer sensory analysis
 
 clear all
@@ -11,9 +19,6 @@ AttributeNames=BeerData.textdata(1,3:end);
 AllMeans=[];
 AllSD=[];
 AllCI=[];
-
-%BeerValues=BeerValues+Beer
-%AllBeerValues=AllBeerValues+BeerValues
 
 %% - Means,StandardDeviations and ConfidensIntervals
 for i = 1:size(BeerNames)
@@ -57,8 +62,6 @@ scores=scores_pca;
 variances=latent_pca;
 %Calculate explained variances in percent
 percent_explained = 100*variances/sum(variances);
-%Explained variance
-figure;
 
 %% - How many dimensions?
 figure;
