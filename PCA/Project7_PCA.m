@@ -33,12 +33,16 @@ for i = 1:size(BeerNames)
     BeerValues=BeerData.data(Indexes-1,1:end);
     BeerValuesMean=mean(BeerValues);
     BeerValuesSD=std(BeerValues);
-    BeerValuesSE=BeerValuesSD
-    BeerValuesCI=BeerValuesMean+1.9600*(BeerValuesSD/square(size(Indexes(),1)));
+    
+ %Finding the upper confidence interval with 95% interval with:
+ %1.9600*(SD/sqrt(SampleSize))
+
+    BeerValuesCI=1.96*(BeerValuesSD/sqrt(size(Indexes,1)));
 
     AllMeans = cat(1,AllMeans,BeerValuesMean);
     AllSD    = cat(1,AllSD,BeerValuesSD);
     AllCI    = cat(1,AllCI,BeerValuesCI);
+    
 end
 
 %% - Tables - Prints some tables
@@ -49,39 +53,34 @@ Confidence_intervals = array2table(AllCI,'RowNames',BeerNames,'VariableNames',At
 %% - Confidence interval for confidance intervals
 MeanCI=mean(AllCI);
 SDCI=std(AllCI);
-CICI=MeanCI+1.96*(SDCI/square(size(AllCI,1)));
+CICI=1.96*(SDCI/sqrt(size(AllCI,1)));
 
-ConfidenceInterval   =   array2table([MeanCI;SDCI;CICI],'RowNames',["MeanCI","SDCI","CICI"],'VariableNames',AttributeNames)
+ConfidenceIntervalTable   =   array2table([MeanCI;SDCI;CICI],'RowNames',["MeanCI","SDCI","CICI"],'VariableNames',AttributeNames)
 
 figure;
-%plot(CI,"b--o",'linewidth',2)
-
 errorbar(1:40,MeanCI,CICI)
-
 xlabel('Attributes');
 ylabel('Confidence interval size');
 set(gca,'xtick',1:size(AttributeNames,2));
 set(gca,'XTickLabel',AttributeNames);
 grid on
 
-
-
 %% - Sort attribute order according to highest to lowest scores
-lastbeer=AllMeans(10,1:end)
-[lastbeerSorted,I] = sort(lastbeer);
-AttributesSorted = AttributeNames(I);
-sortedMeans=[];
-
-for i = 1:size(BeerNames)-1
-    notsorted=AllMeans(i,1:end);
-    sorted=notsorted(I);
-sortedMeans = cat(1,sortedMeans,sorted);
-
-end
-sortedMeans = cat(1,sortedMeans,lastbeerSorted);
-AllMeans=sortedMeans;
-AttributeNames=AttributesSorted;
-
+%lastbeer=AllMeans(10,1:end)
+%[lastbeerSorted,I] = sort(lastbeer);
+%AttributesSorted = AttributeNames(I);
+%sortedMeans=[];
+%
+%for i = 1:size(BeerNames)-1
+%    notsorted=AllMeans(i,1:end);
+%    sorted=notsorted(I);
+%sortedMeans = cat(1,sortedMeans,sorted);
+%
+%end
+%sortedMeans = cat(1,sortedMeans,lastbeerSorted);
+%AllMeans=sortedMeans;
+%AttributeNames=AttributesSorted;
+%
 %% - Profile plot - Put all the mean data into a plot
 colors =["r-o","g--o","b--o","g-o","b-o","c-o","m-o","y-o","k--o","k-o"];
 figure;
