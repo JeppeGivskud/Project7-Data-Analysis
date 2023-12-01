@@ -72,15 +72,15 @@ grid on
 %sortedMeans=[];
 %
 %for i = 1:size(BeerNames)-1
-%    notsorted=AllMeans(i,1:end);
-%    sorted=notsorted(I);
+ %   notsorted=AllMeans(i,1:end);
+  %  sorted=notsorted(I);
 %sortedMeans = cat(1,sortedMeans,sorted);
 %
 %end
 %sortedMeans = cat(1,sortedMeans,lastbeerSorted);
 %AllMeans=sortedMeans;
 %AttributeNames=AttributesSorted;
-%
+% 
 %% - Profile plot - Put all the mean data into a plot
 colors =["r-o","g--o","b--o","g-o","b-o","c-o","m-o","y-o","k--o","k-o"];
 figure;
@@ -96,7 +96,7 @@ set(gca,'xtick',[1:size(AttributeNames,2)]);
 set(gca,'XTickLabel',AttributeNames);
 grid on
 
-%% - PCA
+%% - PCA - no rotation
 [coefs_pca,scores_pca,latent_pca,tsquared_pca,explained_pca] = pca(AllMeans); %This is the new function. Note that it returns only data for the available dimensions
 coefs=coefs_pca;
 scores=scores_pca;
@@ -130,7 +130,7 @@ end
 figure;
 varlbs = AttributeNames;
 obslbs = BeerNames;
-biplot(coefs(:,1:2),'scores',scores(:,1:2),'varlabels',varlbs,'obslabels',obslbs);
+ost = biplot(coefs(:,1:2),'scores',scores(:,1:2),'varlabels',varlbs,'obslabels',obslbs);
 xlabel(['Principal Component 1 (' num2str(percent_explained(1),'%.1f') '%)']);
 ylabel(['Principal Component 2 (' num2str(percent_explained(2),'%.1f') '%)']);
 axis([-1 1 -1 1]);
@@ -139,7 +139,7 @@ axis([-1 1 -1 1]);
 % and then in the new biplot. The original location is scores(1,1) for the
 % first value.
 OriginalValue=scores(1,1);
-scaledDownValue=0.016974;
+scaledDownValue=-0.32005;
 scaling_factor = OriginalValue/scaledDownValue;
 %scaling_factor=115.1/0.41426;
 for i = 1:size(BeerNames)
@@ -148,6 +148,8 @@ end
 
 
 %% - Three dimensional biplot
+OriginalValue=scores(1,1)
+ost(1,1).XData(1,2)
 
 
 %% - LoadPictures
