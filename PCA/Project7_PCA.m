@@ -130,31 +130,42 @@ end
 figure;
 varlbs = AttributeNames;
 obslbs = BeerNames;
-ost = biplot(coefs(:,1:2),'scores',scores(:,1:2),'varlabels',varlbs,'obslabels',obslbs);
+TwodimPlot = biplot(coefs(:,1:2),'scores',scores(:,1:2),'varlabels',varlbs,'obslabels',obslbs);
 xlabel(['Principal Component 1 (' num2str(percent_explained(1),'%.1f') '%)']);
 ylabel(['Principal Component 2 (' num2str(percent_explained(2),'%.1f') '%)']);
-axis([-1 1 -1 1]);
+%axis([-1 1 -1 1]);
 
 % Calculate scaling factor based on where a beer is in the basic pca plot
 % and then in the new biplot. The original location is scores(1,1) for the
 % first value.
-OriginalValue=scores(1,1);
-scaledDownValue=-0.32005;
-scaling_factor = OriginalValue/scaledDownValue;
-%scaling_factor=115.1/0.41426;
+newvalue=TwodimPlot(size(TwodimPlot,1)-1,1).XData(1,1);
+oldvalue=scores(size(scores,1),1);
+scaling_factor = oldvalue/newvalue;
+hold on;
+
 for i = 1:size(BeerNames)
-    text(scores(i,1)/scaling_factor,scores(i,2)/scaling_factor,BeerNames(i))
+img = imread("BeerPictures/"+BeerNames(i)+".png");
+
+
+size = 1/2;
+width = 1/17  *size;
+height = 2/10 *size;
+xpos = scores(i,1)/scaling_factor - width/2;
+ypos = scores(i,2)/scaling_factor - height/10;
+
+
+image('CData',img,'XData',[xpos xpos+width],'YData',[ypos ypos-height]);
+
+text(scores(i,1)/scaling_factor,scores(i,2)/scaling_factor,BeerNames(i));
 end
 
 
-%% - Three dimensional biplot
-OriginalValue=scores(1,1)
-ost(1,1).XData(1,2)
+hold off
 
+
+%% - Three dimensional biplot
 
 %% - LoadPictures
-
-
 %% - Bi plot with pictures
 
 %% - Big table with contribution to pca1,2 and 3 for each attribute
