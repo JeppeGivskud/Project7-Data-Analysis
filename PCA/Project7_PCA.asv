@@ -35,12 +35,11 @@ for i = 1:size(BeerNames)
  % by finding the Standard Error of the Mean (SEM) and multiplying that by 
  % the critical value to get the margin of error. 
  % The confindence interval is the mean +- the margin of error 
- % 2*(Margin of error) = 
+ % 2*(Margin of error)
  % 2*(Critical value*(Standard error of the mean))
- % 2*(Critical value*(SD/sqrt(SampleSize))))
-
+ % 2*(Critical value*(Standard Deviation/sqrt(Sample Size)))
  % 2*(1.9600*(SD/sqrt(SampleSize)))
-
+ % The actual interval is not calculated as only the size is important
     BeerValuesCI=2*(1.96*(BeerValuesSD/sqrt(size(Indexes,1))));
 
     AllMeans = cat(1,AllMeans,BeerValuesMean);
@@ -55,11 +54,10 @@ Standard_deviations  = array2table(AllSD,'RowNames',BeerNames,'VariableNames',At
 Confidence_intervals = array2table(AllCI,'RowNames',BeerNames,'VariableNames',AttributeNames)
 
 %% - Confidence interval for confidance intervals
-% As a way of condensing which attributes are difficult to rate for
-% participants the size of each attributes confidence interval across all
-% beers is measures. If an attribute is rated similarily different across
-% all beers that attribute is easy to asses or more precisely participants experience the
-% attribute similarily
+% As a way of condensing which attributes are good/bad for rating beers.
+% The margin of error is calculated for each confidence interval for all 10 beers
+% If an attribute has a small margin of error that attribute is easy to asses. 
+% More precisely participants experience the attribute similarily.
 
 MeanCI=mean(AllCI);
 SDCI=std(AllCI);
@@ -69,29 +67,17 @@ ConfidenceIntervalTable   =   array2table([MeanCI;SDCI;CICI],'RowNames',["MeanCI
 
 figure;
 errorbar(1:40,MeanCI,CICI)
-xlabel('Attributes');
+title("Mean of confidence interval sizes")
+xlabel('Attribute');
 ylabel('Confidence interval size');
 set(gca,'xtick',1:size(AttributeNames,2));
 set(gca,'XTickLabel',AttributeNames);
 grid on
 
-%% - Sort attribute order according to highest to lowest scores
-%lastbeer=AllMeans(10,1:end)
-%[lastbeerSorted,I] = sort(lastbeer);
-%AttributesSorted = AttributeNames(I);
-%sortedMeans=[];
-%
-%for i = 1:size(BeerNames)-1
- %   notsorted=AllMeans(i,1:end);
-  %  sorted=notsorted(I);
-%sortedMeans = cat(1,sortedMeans,sorted);
-%
-%end
-%sortedMeans = cat(1,sortedMeans,lastbeerSorted);
-%AllMeans=sortedMeans;
-%AttributeNames=AttributesSorted;
-% 
 %% - Profile plot - Put all the mean data into a plot
+% In order to understand the raw data a profile plot is created. 
+% Combining this with the confidence interval of confidence intervals shows
+% if an attribute can be asses confidently with participants.
 colors =["r-o","g--o","b--o","g-o","b-o","c-o","m-o","y-o","k--o","k-o"];
 figure;
 hold on
@@ -99,8 +85,9 @@ hold on
 for i = 1:size(BeerNames)
 plot(AllMeans(i,1:end),colors(i),'linewidth',2)
 end
-xlabel('Attributes');
-ylabel('Score');
+title("Profile plot for all attributes")
+xlabel('Attribute');
+ylabel('Score (0-7)');
 legend(BeerNames);
 set(gca,'xtick',[1:size(AttributeNames,2)]);
 set(gca,'XTickLabel',AttributeNames);
@@ -151,8 +138,8 @@ ylabel(['Principal Component 2 (' num2str(percent_explained(2),'%.1f') '%)']);
 newvalue=TwodimPlot(size(TwodimPlot,1)-1,1).XData(1,1);
 oldvalue=scores(size(scores,1),1);
 scaling_factor = oldvalue/newvalue;
-hold on;
 
+hold on;
 for i = 1:size(BeerNames)
 img = imread("BeerPictures/"+BeerNames(i)+".png");
 
@@ -168,22 +155,45 @@ image('CData',img,'XData',[xpos xpos+width],'YData',[ypos ypos-height]);
 
 text(scores(i,1)/scaling_factor,scores(i,2)/scaling_factor,BeerNames(i));
 end
-
-
 hold off
 
 
-%% - Three dimensional biplot
-
-%% - LoadPictures
-%% - Bi plot with pictures
-
+%% - Three dimensional biplot is not necessary
 %% - Big table with contribution to pca1,2 and 3 for each attribute
+Columns={sprintf('PC1(%.1f%%)',percent_explained(1))  sprintf('PC1(%.1f%%)',percent_explained(2)),sprintf('PC1(%.1f%%)',percent_explained(3))};
+Rows = AttributeNames;
+
+Loadings = [];
+for i= 1:length(AttributeNames)
+row = {sprintf('%.1f%%',coefs(i,1)), sprintf('%.1f%%',coefs(i,2)), sprintf('%.1f%%',coefs(i,3))};
+Loadings = cat(1,row,Loadings);
+end
+
+LoadingsTable   =   array2table(Loadings,'RowNames',Rows,'VariableNames',Columns)
 
 %% - Varimax rotation + two and three dimensional biplot
+[coefs,T] = rotatefactors(coefs(:,1:3));  %default VARIMAX. T contains the rotation matrix
+scores=scores(:,1:3)*T; % Scores for rotated solution
+variances=var(scores,0,1); %calculate variances of rotated scores
 
 
+%Calculate explained variances in percent from rotated
+percent_explained = 100*variances_rotated/sum(variances);
+
+percent_explained=[percent_explained_rotated 0];
 
 
+%Explained variance
+figure;
 
+cumulative_percent_explained_rotated=cumsum(percent_explained_rotated);
+%pareto(percent_explained_rotated) %does not show the last 5 %
+bar(percent_explained_rotated)
+hold on
+plot([0:length(cumulative_percent_explained_rotated)],[0 cumulative_percent_explained_rotated])
+axis([0 6 0 105])
+xlabel('Principal Component (rotated)')
+ylabel('Variance Explained (%)')
+set(gca,'Xtick',[1 2 3 4 5])
+title('Rotated')
 

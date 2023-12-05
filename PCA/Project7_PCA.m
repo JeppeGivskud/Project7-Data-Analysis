@@ -7,13 +7,14 @@
 clear all
 close all
 clc
-
+%%
 [BeerData,delimiterOut,headerlinesOut]=importdata("RawDataCombined.csv",',',1);
 
 % Takes unique data from columns or rows and converts that array to string
 Participants=string(unique(BeerData.textdata(2:end,1),'stable'));
 BeerNames=string(unique(BeerData.textdata(2:end,2),'stable'));
 AttributeNames=string(BeerData.textdata(1,3:end));
+IDs=string(unique(BeerData.textdata(1:end,2),'stable'));
 
 
 %% - Means,StandardDeviations and ConfidensIntervals
@@ -67,7 +68,8 @@ ConfidenceIntervalTable   =   array2table([MeanCI;SDCI;CICI],'RowNames',["MeanCI
 
 figure;
 errorbar(1:40,MeanCI,CICI)
-xlabel('Attributes');
+title("Mean of confidence interval sizes")
+xlabel('Attribute');
 ylabel('Confidence interval size');
 set(gca,'xtick',1:size(AttributeNames,2));
 set(gca,'XTickLabel',AttributeNames);
@@ -84,8 +86,9 @@ hold on
 for i = 1:size(BeerNames)
 plot(AllMeans(i,1:end),colors(i),'linewidth',2)
 end
-xlabel('Attributes');
-ylabel('Score');
+title("Profile plot for all attributes")
+xlabel('Attribute');
+ylabel('Score (0-7)');
 legend(BeerNames);
 set(gca,'xtick',[1:size(AttributeNames,2)]);
 set(gca,'XTickLabel',AttributeNames);
@@ -136,8 +139,8 @@ ylabel(['Principal Component 2 (' num2str(percent_explained(2),'%.1f') '%)']);
 newvalue=TwodimPlot(size(TwodimPlot,1)-1,1).XData(1,1);
 oldvalue=scores(size(scores,1),1);
 scaling_factor = oldvalue/newvalue;
-hold on;
 
+hold on;
 for i = 1:size(BeerNames)
 img = imread("BeerPictures/"+BeerNames(i)+".png");
 
@@ -153,19 +156,45 @@ image('CData',img,'XData',[xpos xpos+width],'YData',[ypos ypos-height]);
 
 text(scores(i,1)/scaling_factor,scores(i,2)/scaling_factor,BeerNames(i));
 end
-
-
 hold off
 
 
-%% - Three dimensional biplot
-
-%% - LoadPictures
-%% - Bi plot with pictures
-
+%% - Three dimensional biplot is not necessary
 %% - Big table with contribution to pca1,2 and 3 for each attribute
+Columns={sprintf('PC1(%.1f%%)',percent_explained(1))  sprintf('PC1(%.1f%%)',percent_explained(2)),sprintf('PC1(%.1f%%)',percent_explained(3))};
+Rows = AttributeNames;
+
+Loadings = [];
+for i= 1:length(AttributeNames)
+row = {sprintf('%.1f%%',coefs(i,1)), sprintf('%.1f%%',coefs(i,2)), sprintf('%.1f%%',coefs(i,3))};
+Loadings = cat(1,row,Loadings);
+end
+
+LoadingsTable   =   array2table(Loadings,'RowNames',Rows,'VariableNames',Columns)
 
 %% - Varimax rotation + two and three dimensional biplot
+[coefs_rotated,T] = rotatefactors(coefs(:,1:3));  %uses default VARIMAX. T contains the rotation matrix
+scores_rotated=scores(:,1:3)*T;
+variances_rotated=var(scores_rotated,0,1); %calculate variances of rotated scores
+percent_explained_rotated = 100*variances_rotated/sum(variances); %Calculate explained variances in percent from rotated
+percent_explained_rotated=[percent_explained_rotated 0];
+
+
+%Explained variance
+figure;
+
+cumulative_percent_explained_rotated=cumsum(percent_explained_rotated);
+%pareto(percent_explained_rotated) %does not show the last 5 %
+bar(percent_explained_rotated)
+hold on
+plot([0:length(cumulative_percent_explained_rotated)],[0 cumulative_percent_explained_rotated])
+axis([0 6 0 105])
+xlabel('Principal Component (rotated)')
+ylabel('Variance Explained (%)')
+set(gca,'Xtick',[1 2 3 4 5])
+title('Rotated')
+% actually this solution is more blurred than the other one.
+
 
 
 
