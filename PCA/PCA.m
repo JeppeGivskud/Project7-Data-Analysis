@@ -66,12 +66,13 @@ hold off
 
 %% - Three dimensional biplot is not necessary
 %% - Big table with contribution to pca1,2 and 3 for each attribute
-Columns={sprintf('PC1(%.1f%%)',percent_explained(1))  sprintf('PC1(%.1f%%)',percent_explained(2)),sprintf('PC1(%.1f%%)',percent_explained(3))};
+Columns={sprintf('PC1(%.1f%%)',percent_explained(1))  sprintf('PC2(%.1f%%)',percent_explained(2))};
 Rows = AttributeNames;
 
 Loadings = [];
 for i= 1:length(AttributeNames)
-row = {sprintf('%.1f%%',coefs(i,1)), sprintf('%.1f%%',coefs(i,2)), sprintf('%.1f%%',coefs(i,3))};
+    coefs(i,1)
+row = {sprintf('%.3f%',coefs(i,1)), sprintf('%.1f%',coefs(i,2))};
 Loadings = cat(1,row,Loadings);
 end
 
@@ -191,3 +192,15 @@ scaling_factor_Rotated = oldvalue/newvalue
 for i = 1:length(BeerNames)
 text(scores_rotated(i,1)/scaling_factor_Rotated,scores_rotated(i,2)/scaling_factor_Rotated,-scores_rotated(i,3)/scaling_factor_Rotated,BeerNames(i));
 end
+%% - Big table with contribution to pca1,2 and 3 for each attribute
+Columns={sprintf('PC1(%.1f%%)',percent_explained_rotated(1))  sprintf('PC2(%.1f%%)',percent_explained_rotated(2)),sprintf('PC3(%.1f%%)',percent_explained_rotated(3))};
+Rows = AttributeNames;
+
+LoadingsRotated = [];
+for i= 1:length(AttributeNames)
+row = {sprintf('%.3f%',coefs_rotated(i,1)), sprintf('%.1f%',coefs_rotated(i,2)), sprintf('%.1f%',coefs_rotated(i,3))};
+LoadingsRotated = cat(1,row,LoadingsRotated);
+end
+
+LoadingsTableRotated   =   array2table(LoadingsRotated,'RowNames',Rows,'VariableNames',Columns)
+
