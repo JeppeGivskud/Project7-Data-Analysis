@@ -2,14 +2,18 @@ LoadData
 CalculateMeans
 
 %% - Tables - Prints some tables
-Means   =   array2table(AllMeans,'RowNames',BeerNames,'VariableNames',AttributeNames)
-Standard_deviations  = array2table(AllSD,'RowNames',BeerNames,'VariableNames',AttributeNames)
-Confidence_intervals = array2table(AllCI,'RowNames',BeerNames,'VariableNames',AttributeNames)
+BeerNamesthree = extractBefore(BeerNames,4)
+BeerNamesthree(8,1)="Cla"
+BeerNamesthree(10,1)="Nul"
+Means   =   array2table(AllMeans,'RowNames',BeerNamesthree,'VariableNames',AttributeNames)
+Standard_deviations  = array2table(AllSD,'RowNames',BeerNamesthree,'VariableNames',AttributeNames)
+Confidence_intervals = array2table(AllCI,'RowNames',BeerNamesthree,'VariableNames',AttributeNames)
 
 %% - Combine tables to get confidence interval
-MeansplusConfidence = round(AllMeans,2)+"+-"+string(round(AllCI,2))
-MeansplusConfidenceTable = array2table(MeansplusConfidence,'RowNames',BeerNames,'VariableNames',AttributeNames)
+MeansplusConfidence = round(AllMeans,1)+"+-"+string(round(AllCI,1))
+MeansplusConfidenceTable = array2table(MeansplusConfidence,'RowNames',BeerNamesthree,'VariableNames',AttributeNames)
 writetable(MeansplusConfidenceTable,'MeansTables/MeansplusConfidenceTable.csv','WriteRowNames',true);
+
 writetable(round(Means,1),'MeansTables/MeansAllBeers.csv','WriteRowNames',true);
 
 %% - Confidence interval for confidance intervals
