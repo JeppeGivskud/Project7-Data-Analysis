@@ -5,8 +5,8 @@
 % removed and with the Kaiser-Meyer-Olkin Measure of Sampling Adequacy KMO
 % test
 
-LoadData
-CalculateMeans
+%LoadData
+%CalculateMeans
 
 %Eigenvalue analyse:
 correlation_matrix=corr(AllMeans);

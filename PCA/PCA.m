@@ -1,5 +1,5 @@
-LoadData
-CalculateMeans
+%LoadData
+%CalculateMeans
 
 %% - PCA - no rotation
 [coefs_pca,scores_pca,latent_pca,tsquared_pca,explained_pca] = pca(AllMeans); %This is the new function. Note that it returns only data for the available dimensions
