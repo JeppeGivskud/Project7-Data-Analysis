@@ -1,3 +1,6 @@
+LoadData
+CalculateMeans
+
 %% - PCA - no rotation
 [coefs_pca,scores_pca,latent_pca,tsquared_pca,explained_pca] = pca(AllMeans); %This is the new function. Note that it returns only data for the available dimensions
 coefs=coefs_pca;
@@ -5,18 +8,17 @@ scores=scores_pca;
 variances=latent_pca;
 %Calculate explained variances in percent
 percent_explained = 100*variances/sum(variances);
+cumulative_percent_explained=cumsum(percent_explained);
 
 %% - How many dimensions?
 figure;
-cumulative_percent_explained=cumsum(percent_explained);
-%pareto(percent_explained) %does not show the last 5 %
 bar(percent_explained)
 hold on
-plot([0:length(cumulative_percent_explained)],[0 cumulative_percent_explained'])
+plot(0:length(cumulative_percent_explained),[0 cumulative_percent_explained'])
 axis([0 6 0 105])
 xlabel('Principal Component')
 ylabel('Variance Explained (%)')
-set(gca,'Xtick',[1 2 3 4 5])
+set(gca,'Xtick',1:1:5)
 
 %% - Plot solution with PC1 and PC2
 figure;
@@ -24,6 +26,7 @@ plot(scores(:,1),scores(:,2),'+')
 xlabel(['Principal Component 1 (' num2str(percent_explained(1),'%.1f') '%)'])
 ylabel(['Principal Component 2 (' num2str(percent_explained(2),'%.1f') '%)'])
 grid on
+
 for i = 1:size(BeerNames)
     text(scores(i,1)+0.05,scores(i,2),BeerNames(i))
 end
@@ -40,21 +43,19 @@ ylabel(['Principal Component 2 (' num2str(percent_explained(2),'%.1f') '%)']);
 % Calculate scaling factor based on where a beer is in the basic pca plot
 % and then in the new biplot. The original location is scores(1,1) for the
 % first value.
-newvalue=TwodimPlot(size(TwodimPlot,1)-1,1).XData(1,1);
-oldvalue=scores(size(scores,1),1);
-scaling_factor = oldvalue/newvalue;
+    newvalue=TwodimPlot(size(TwodimPlot,1)-1,1).XData(1,1);
+    oldvalue=scores(size(scores,1),1);
+    scaling_factor = oldvalue/newvalue;
 
 hold on;
 for i = 1:size(BeerNames)
 img = imread("BeerPictures/"+BeerNames(i)+".png");
-
 
 size = 1/2;
 width = 1/17  *size;
 height = 2/10 *size;
 xpos = scores(i,1)/scaling_factor - width/2;
 ypos = scores(i,2)/scaling_factor - height/10;
-
 
 image('CData',img,'XData',[xpos xpos+width],'YData',[ypos ypos-height]);
 
@@ -79,9 +80,9 @@ LoadingsTable   =   array2table(Loadings,'RowNames',Rows,'VariableNames',Columns
 %% - Varimax rotation + two and three dimensional biplot
 [coefs_rotated,T] = rotatefactors(coefs(:,1:3));  %uses default VARIMAX. T contains the rotation matrix
 scores_rotated=scores(:,1:3)*T;
+
 variances_rotated=var(scores_rotated,0,1); %calculate variances of rotated scores
-percent_explained_rotated = 100*variances_rotated/sum(variances); %Calculate explained variances in percent from rotated
-percent_explained_rotated=[percent_explained_rotated 0];
+percent_explained_rotated = 100*variances_rotated/sum(variances_rotated); %Calculate explained variances in percent from rotated
 
 
 %Explained variance
@@ -122,27 +123,31 @@ ylabel(['Principal Component 2 (' num2str(percent_explained_rotated(2),'%.1f') '
 % Calculate scaling factor based on where a beer is in the basic pca plot
 % and then in the new biplot. The original location is scores(1,1) for the
 % first value.
-newvalue=TwodimPlotRotated(length(TwodimPlotRotated,1)-1,1).XData(1,1);
-oldvalue=scores_rotated(size(scores_rotated,1),1);
-scaling_factor = oldvalue/newvalue;
+NewObjectIndex=length(TwodimPlotRotated(1:end,1))-1
+newvalue=TwodimPlotRotated(NewObjectIndex,1).XData(1,1)
+
+OldObjectIndex=length(scores_rotated(1:end,1))
+oldvalue=scores_rotated(OldObjectIndex,1)
+scaling_factor_Rotated = oldvalue/newvalue
 
 hold on;
-for i = 1:size(BeerNames)
+for i = 1:length(BeerNames)
 img = imread("BeerPictures/"+BeerNames(i)+".png");
 
 
 size = 1/2;
 width = 1/17  *size;
 height = 2/10 *size;
-xpos = scores_rotated(i,1)/scaling_factor - width/2;
-ypos = scores_rotated(i,2)/scaling_factor - height/10;
+xpos = scores_rotated(i,1)/scaling_factor_Rotated - width/2;
+ypos = scores_rotated(i,2)/scaling_factor_Rotated - height/10;
 
 
 image('CData',img,'XData',[xpos xpos+width],'YData',[ypos ypos-height]);
 
-text(scores_rotated(i,1)/scaling_factor,scores_rotated(i,2)/scaling_factor,BeerNames(i));
+text(scores_rotated(i,1)/scaling_factor_Rotated,scores_rotated(i,2)/scaling_factor_Rotated,BeerNames(i));
 end
 hold off
 
+%% - Threedimensional PCA plot
 
 

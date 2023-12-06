@@ -45,8 +45,8 @@ set(gca,'xtick',[1:size(AttributeNames,2)]);
 set(gca,'XTickLabel',AttributeNames);
 grid on
 
+%% - Factor analysis
+FactorAnalysis
 %% - PCA
 PCA
 
-%% - Factor analysis
-FactorAnalysis
