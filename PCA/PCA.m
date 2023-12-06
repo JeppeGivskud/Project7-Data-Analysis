@@ -71,12 +71,18 @@ Rows = AttributeNames;
 
 Loadings = [];
 for i= 1:length(AttributeNames)
-    coefs(i,1)
-row = {sprintf('%.3f%',coefs(i,1)), sprintf('%.1f%',coefs(i,2))};
-Loadings = cat(1,row,Loadings);
+    row = [coefs(i,1) ,coefs(i,2)];
+    Loadings = cat(1,row,Loadings);
 end
 
-LoadingsTable   =   array2table(Loadings,'RowNames',Rows,'VariableNames',Columns)
+LoadingsTable   =   array2table(Loadings,'RowNames',Rows,'VariableNames',Columns);
+
+
+
+
+
+
+
 
 %% - Varimax rotation + two and three dimensional biplot
 [coefs_rotated,T] = rotatefactors(coefs(:,1:3));  %uses default VARIMAX. T contains the rotation matrix
@@ -112,42 +118,6 @@ for i = 1:length(BeerNames)
     text(scores_rotated(i,1)+0.05,scores_rotated(i,2),BeerNames(i))
 end
 
-%% - twodimensional biplot
-figure;
-varlbs = AttributeNames;
-obslbs = BeerNames;
-TwodimPlotRotated = biplot(coefs_rotated(:,1:2),'scores',scores_rotated(:,1:2),'varlabels',varlbs,'obslabels',obslbs);
-xlabel(['Principal Component 1 (' num2str(percent_explained_rotated(1),'%.1f') '%)']);
-ylabel(['Principal Component 2 (' num2str(percent_explained_rotated(2),'%.1f') '%)']);
-%axis([-1 1 -1 1]);
-
-% Calculate scaling factor based on where a beer is in the basic pca plot
-% and then in the new biplot. The original location is scores(1,1) for the
-% first value.
-NewObjectIndex=length(TwodimPlotRotated(1:end,1))-1
-newvalue=TwodimPlotRotated(NewObjectIndex,1).XData(1,1)
-
-OldObjectIndex=length(scores_rotated(1:end,1))
-oldvalue=scores_rotated(OldObjectIndex,1)
-scaling_factor_Rotated = oldvalue/newvalue
-
-hold on;
-for i = 1:length(BeerNames)
-img = imread("BeerPictures/"+BeerNames(i)+".png");
-
-
-size = 1/2;
-width = 1/17  *size;
-height = 2/10 *size;
-xpos = scores_rotated(i,1)/scaling_factor_Rotated - width/2;
-ypos = scores_rotated(i,2)/scaling_factor_Rotated - height/10;
-
-
-image('CData',img,'XData',[xpos xpos+width],'YData',[ypos ypos-height]);
-
-text(scores_rotated(i,1)/scaling_factor_Rotated,scores_rotated(i,2)/scaling_factor_Rotated,BeerNames(i));
-end
-hold off
 
 %% - Threedimensional PCA plot
 
@@ -182,12 +152,12 @@ zlabel(['Principal Component 3 (' num2str(percent_explained_rotated(3),'%.1f') '
 % and then in the new biplot. The original location is scores(1,1) for the
 % first value.
 
-NewObjectIndex=length(ThreedimPlotRotated(1:end,1))-1
-newvalue=ThreedimPlotRotated(NewObjectIndex,1).XData(1,1)
+NewObjectIndex=length(ThreedimPlotRotated(1:end,1))-1;
+newvalue=ThreedimPlotRotated(NewObjectIndex,1).XData(1,1);
 
-OldObjectIndex=length(scores_rotated(1:end,1))
-oldvalue=scores_rotated(OldObjectIndex,1)
-scaling_factor_Rotated = oldvalue/newvalue
+OldObjectIndex=length(scores_rotated(1:end,1));
+oldvalue=scores_rotated(OldObjectIndex,1);
+scaling_factor_Rotated = oldvalue/newvalue;
 
 for i = 1:length(BeerNames)
 text(scores_rotated(i,1)/scaling_factor_Rotated,scores_rotated(i,2)/scaling_factor_Rotated,-scores_rotated(i,3)/scaling_factor_Rotated,BeerNames(i));
@@ -198,9 +168,14 @@ Rows = AttributeNames;
 
 LoadingsRotated = [];
 for i= 1:length(AttributeNames)
-row = {sprintf('%.3f%',coefs_rotated(i,1)), sprintf('%.1f%',coefs_rotated(i,2)), sprintf('%.1f%',coefs_rotated(i,3))};
+row = [coefs_rotated(i,1) ,coefs_rotated(i,2) ,coefs_rotated(i,3)];
 LoadingsRotated = cat(1,row,LoadingsRotated);
 end
 
-LoadingsTableRotated   =   array2table(LoadingsRotated,'RowNames',Rows,'VariableNames',Columns)
+LoadingsTableRotated   =   array2table(LoadingsRotated,'RowNames',fliplr(Rows),'VariableNames',Columns);
+
+
+writetable(LoadingsTable,'LoadingTables/TablesLoadingsTable.csv','WriteRowNames',true);
+writetable(LoadingsTableRotated,'LoadingTables/LoadingsTableRotated.csv','WriteRowNames',true);
+
 

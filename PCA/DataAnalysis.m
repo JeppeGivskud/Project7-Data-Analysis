@@ -1,5 +1,6 @@
 LoadData
 CalculateMeans
+
 %% - Tables - Prints some tables
 Means   =   array2table(AllMeans,'RowNames',BeerNames,'VariableNames',AttributeNames)
 Standard_deviations  = array2table(AllSD,'RowNames',BeerNames,'VariableNames',AttributeNames)
