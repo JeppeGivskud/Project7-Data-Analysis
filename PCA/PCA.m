@@ -100,8 +100,49 @@ title('Rotated')
 % actually this solution is more blurred than the other one.
 
 
+%% - Plot solution with PC1 and PC2
+figure;
+plot(scores_rotated(:,1),scores_rotated(:,2),'+')
+xlabel(['Principal Component 1 (' num2str(percent_explained_rotated(1),'%.1f') '%)'])
+ylabel(['Principal Component 2 (' num2str(percent_explained_rotated(2),'%.1f') '%)'])
+grid on
+for i = 1:length(BeerNames)
+    text(scores_rotated(i,1)+0.05,scores_rotated(i,2),BeerNames(i))
+end
+
+%% - twodimensional biplot
+figure;
+varlbs = AttributeNames;
+obslbs = BeerNames;
+TwodimPlotRotated = biplot(coefs_rotated(:,1:2),'scores',scores_rotated(:,1:2),'varlabels',varlbs,'obslabels',obslbs);
+xlabel(['Principal Component 1 (' num2str(percent_explained_rotated(1),'%.1f') '%)']);
+ylabel(['Principal Component 2 (' num2str(percent_explained_rotated(2),'%.1f') '%)']);
+%axis([-1 1 -1 1]);
+
+% Calculate scaling factor based on where a beer is in the basic pca plot
+% and then in the new biplot. The original location is scores(1,1) for the
+% first value.
+newvalue=TwodimPlotRotated(length(TwodimPlotRotated,1)-1,1).XData(1,1);
+oldvalue=scores_rotated(size(scores_rotated,1),1);
+scaling_factor = oldvalue/newvalue;
+
+hold on;
+for i = 1:size(BeerNames)
+img = imread("BeerPictures/"+BeerNames(i)+".png");
 
 
+size = 1/2;
+width = 1/17  *size;
+height = 2/10 *size;
+xpos = scores_rotated(i,1)/scaling_factor - width/2;
+ypos = scores_rotated(i,2)/scaling_factor - height/10;
+
+
+image('CData',img,'XData',[xpos xpos+width],'YData',[ypos ypos-height]);
+
+text(scores_rotated(i,1)/scaling_factor,scores_rotated(i,2)/scaling_factor,BeerNames(i));
+end
+hold off
 
 
 
