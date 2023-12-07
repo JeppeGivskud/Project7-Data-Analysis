@@ -13,9 +13,9 @@ Confidence_intervals = array2table(AllCI,'RowNames',BeerNamesthree,'VariableName
 %% - Combine tables to get confidence interval
 MeansplusConfidence = round(AllMeans,1)+"+-"+string(round(AllCI,1))
 MeansplusConfidenceTable = array2table(MeansplusConfidence,'RowNames',BeerNamesthree,'VariableNames',AttributeNames)
-writetable(MeansplusConfidenceTable,'MeansTables/MeansplusConfidenceTable.csv','WriteRowNames',true);
+writetable(MeansplusConfidenceTable,'Tables/MeansTables/MeansplusConfidenceTable.csv','WriteRowNames',true);
 
-writetable(round(Means,1),'MeansTables/MeansAllBeers.csv','WriteRowNames',true);
+writetable(round(Means,1),'Tables/MeansTables/MeansAllBeers.csv','WriteRowNames',true);
 
 %% - Confidence interval for confidance intervals
 % As a way of condensing which attributes are good/bad for rating beers.
