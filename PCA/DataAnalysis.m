@@ -9,6 +9,7 @@ Means   =   array2table(AllMeans,'RowNames',BeerNamesthree,'VariableNames',Attri
 Standard_deviations  = array2table(AllSD,'RowNames',BeerNamesthree,'VariableNames',AttributeNames)
 Confidence_intervals = array2table(AllCI,'RowNames',BeerNamesthree,'VariableNames',AttributeNames)
 
+
 %% - Combine tables to get confidence interval
 MeansplusConfidence = round(AllMeans,1)+"+-"+string(round(AllCI,1))
 MeansplusConfidenceTable = array2table(MeansplusConfidence,'RowNames',BeerNamesthree,'VariableNames',AttributeNames)

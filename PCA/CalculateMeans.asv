@@ -13,14 +13,12 @@ for i = 1:size(BeerNames)
     Indexes=find(BeerData.textdata(1:end,2)==BeerNames(i));
     BeerValues=BeerData.data(Indexes-1,1:end);
     
-    row = [];
     for j=1:length(AttributeNames)
         
-        [H, pValue, W] = swtest(BeerValues(1:end,j));
-        row = cat(2,row,pValue);
+        attributevalues=BeerValues(1:end,j)
+        [H, pValue, W] = swtest(attributevalues);
+        
     end
-    Normality = cat(1,Normality,row);
-
     
     BeerValuesMean=mean(BeerValues);
     BeerValuesSD=std(BeerValues);

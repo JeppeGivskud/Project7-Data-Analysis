@@ -19,6 +19,7 @@ axis([0 6 0 105])
 xlabel('Principal Component')
 ylabel('Variance Explained (%)')
 set(gca,'Xtick',1:1:5)
+title("Scree plot PCA")
 
 %% - Plot solution with PC1 and PC2
 figure;
@@ -26,19 +27,21 @@ plot(scores(:,1),scores(:,2),'+')
 xlabel(['Principal Component 1 (' num2str(percent_explained(1),'%.1f') '%)'])
 ylabel(['Principal Component 2 (' num2str(percent_explained(2),'%.1f') '%)'])
 grid on
+title("PCA plot with two dimensions")
 
 for i = 1:size(BeerNames)
     text(scores(i,1)+0.05,scores(i,2),BeerNames(i))
 end
 
 %% - twodimensional biplot
-figure;
 varlbs = AttributeNames;
-obslbs = BeerNames;
+obslbs = BeerNames;figure;
+
 TwodimPlot = biplot(coefs(:,1:2),'scores',scores(:,1:2),'varlabels',varlbs,'obslabels',obslbs);
 xlabel(['Principal Component 1 (' num2str(percent_explained(1),'%.1f') '%)']);
 ylabel(['Principal Component 2 (' num2str(percent_explained(2),'%.1f') '%)']);
 %axis([-1 1 -1 1]);
+title("Bi-plot with two dimensions")
 
 % Calculate scaling factor based on where a beer is in the basic pca plot
 % and then in the new biplot. The original location is scores(1,1) for the
@@ -94,7 +97,6 @@ percent_explained_rotated = 100*variances_rotated/sum(variances_rotated); %Calcu
 
 %Explained variance
 figure;
-
 cumulative_percent_explained_rotated=cumsum(percent_explained_rotated);
 %pareto(percent_explained_rotated) %does not show the last 5 %
 bar(percent_explained_rotated)
@@ -104,7 +106,7 @@ axis([0 6 0 105])
 xlabel('Principal Component (rotated)')
 ylabel('Variance Explained (%)')
 set(gca,'Xtick',[1 2 3 4 5])
-title('Rotated')
+title("Scree plot rotated Varimax PCA");
 % actually this solution is more blurred than the other one.
 
 
@@ -117,11 +119,13 @@ grid on
 for i = 1:length(BeerNames)
     text(scores_rotated(i,1)+0.05,scores_rotated(i,2),BeerNames(i))
 end
+title("Rotated PCA plot with two dimensions DONT USE");
 
 
 %% - Threedimensional PCA plot
 
 figure;
+
 plot3(scores_rotated(:,1),scores_rotated(:,2),scores_rotated(:,3),'o')
 xlabel(['Principal Component 1 (' num2str(percent_explained_rotated(1),'%.1f') '%)'])
 ylabel(['Principal Component 2 (' num2str(percent_explained_rotated(2),'%.1f') '%)'])
@@ -131,18 +135,20 @@ hold on
 for i = 1:length(BeerNames)
     text(scores_rotated(i,1)+0.05,scores_rotated(i,2),scores_rotated(i,3),BeerNames(i))
     top = [scores_rotated(i,1) scores_rotated(i,2) scores_rotated(i,3)];
-    bottom = [scores_rotated(i,1) scores_rotated(i,2) -5];
+    bottom = [scores_rotated(i,1) scores_rotated(i,2) -6];
     together = [top ; bottom];
     plot3(together(:,1),together(:,2),together(:,3),'--oblack')
 end
 hold off
 grid on
+title("Rotated PCA plot with three dimensions");
+
 
 %% - threedimensional biplot
 figure;
 varlbs = AttributeNames;
 obslbs = BeerNames;
-ThreedimPlotRotated = biplot(coefs_rotated(:,1:3),'scores',scores_rotated(:,1:3),'varlabels',varlbs,'obslabels',obslbs);
+ThreedimPlotRotated = biplot(coefs_rotated(:,1:3),'scores',scores_rotated(:,1:3),'varlabels',varlbs,'obslabels',obslbs,'LineWidth',0.2);
 xlabel(['Principal Component 1 (' num2str(percent_explained_rotated(1),'%.1f') '%)']);
 ylabel(['Principal Component 2 (' num2str(percent_explained_rotated(2),'%.1f') '%)']);
 zlabel(['Principal Component 3 (' num2str(percent_explained_rotated(3),'%.1f') '%)'])
@@ -151,6 +157,16 @@ zlabel(['Principal Component 3 (' num2str(percent_explained_rotated(3),'%.1f') '
 % Calculate scaling factor based on where a beer is in the basic pca plot
 % and then in the new biplot. The original location is scores(1,1) for the
 % first value.
+hold on
+
+%for i = 1:length(AttributeNames)
+    %text(coefs_rotated(i,1)+0.05,coefs_rotated(i,2),coefs_rotated(i,3),AttributeNames(i))
+    %top = [coefs_rotated(i,1) coefs_rotated(i,2) -coefs_rotated(i,3)];
+   % bottom = [coefs_rotated(i,1) coefs_rotated(i,2) -0.5];
+  %  together = [top ; bottom];
+ %   plot3(together(:,1),together(:,2),together(:,3),'--oblack')
+%end
+
 
 NewObjectIndex=length(ThreedimPlotRotated(1:end,1))-1;
 newvalue=ThreedimPlotRotated(NewObjectIndex,1).XData(1,1);
@@ -162,6 +178,9 @@ scaling_factor_Rotated = oldvalue/newvalue;
 for i = 1:length(BeerNames)
 text(scores_rotated(i,1)/scaling_factor_Rotated,scores_rotated(i,2)/scaling_factor_Rotated,-scores_rotated(i,3)/scaling_factor_Rotated,BeerNames(i));
 end
+title("Rotated bi-plot with three dimensions");
+hold off
+
 %% - Big table with contribution to pca1,2 and 3 for each attribute
 Columns={sprintf('PC1(%.1f%%)',percent_explained_rotated(1))  sprintf('PC2(%.1f%%)',percent_explained_rotated(2)),sprintf('PC3(%.1f%%)',percent_explained_rotated(3))};
 Rows = AttributeNames;
