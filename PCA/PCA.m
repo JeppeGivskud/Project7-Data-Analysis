@@ -159,13 +159,12 @@ zlabel(['Principal Component 3 (' num2str(percent_explained_rotated(3),'%.1f') '
 % first value.
 hold on
 
-%for i = 1:length(AttributeNames)
-    %text(coefs_rotated(i,1)+0.05,coefs_rotated(i,2),coefs_rotated(i,3),AttributeNames(i))
-    %top = [coefs_rotated(i,1) coefs_rotated(i,2) -coefs_rotated(i,3)];
-   % bottom = [coefs_rotated(i,1) coefs_rotated(i,2) -0.5];
-  %  together = [top ; bottom];
- %   plot3(together(:,1),together(:,2),together(:,3),'--oblack')
-%end
+for i = 1:length(AttributeNames)
+    top = [coefs_rotated(i,1) coefs_rotated(i,2) -coefs_rotated(i,3)];
+    bottom = [coefs_rotated(i,1) coefs_rotated(i,2) -0.5];
+    together = [top ; bottom];
+    plot3(together(:,1),together(:,2),together(:,3),'--oblack')
+end
 
 
 NewObjectIndex=length(ThreedimPlotRotated(1:end,1))-1;
