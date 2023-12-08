@@ -193,7 +193,7 @@ end
 LoadingsTableRotated   =   array2table(LoadingsRotated,'RowNames',fliplr(Rows),'VariableNames',Columns);
 
 
-writetable(LoadingsTable,'Tables/LoadingTables/TablesLoadingsTable.csv','WriteRowNames',true);
-writetable(LoadingsTableRotated,'Tables/LoadingTables/LoadingsTableRotated.csv','WriteRowNames',true);
+writetable(LoadingsTable,'Tables/Loadings/TablesLoadingsTable.csv','WriteRowNames',true);
+writetable(LoadingsTableRotated,'Tables/Loadings/LoadingsTableRotated.csv','WriteRowNames',true);
 
 
