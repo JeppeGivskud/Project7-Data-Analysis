@@ -16,6 +16,7 @@ MeansplusConfidenceTable = array2table(MeansplusConfidence,'RowNames',BeerNamest
 writetable(MeansplusConfidenceTable,'Tables/MeansTables/MeansplusConfidenceTable.csv','WriteRowNames',true);
 
 writetable(round(Means,1),'Tables/MeansTables/MeansAllBeers.csv','WriteRowNames',true);
+writetable(round(Confidence_intervals,2),'Tables/MeansTables/Confidences.csv','WriteRowNames',true);
 
 %% - Confidence interval for confidance intervals
 % As a way of condensing which attributes are good/bad for rating beers.
