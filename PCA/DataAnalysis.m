@@ -1,6 +1,6 @@
 LoadData
 CalculateMeans
-
+QQplots
 %% - Tables - Prints some tables
 BeerNamesthree = extractBefore(BeerNames,4)
 BeerNamesthree(8,1)="Cla"
