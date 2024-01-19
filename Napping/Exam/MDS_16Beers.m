@@ -1,13 +1,18 @@
 % There is not a lot of documentation in this code... sorry. 
 % But its just some basic multidimensional scaling functions and som plot parameters
+clear
+clc
 
-Test1order = {'Tuborg Nul','Tuborg Classic','Sebastian (Belgisk Wit)','Amigo (Pilsner)','Wiener Walzer (Classic)','Amarillo (IPA)','Angelina (Mai Bock)','Brown Bella (Belgisk dubbel)','Alexander (Baltisk porter)','Aronia (Berliner Weisse)'};
-Test1 = readmatrix('MEGAHUGETABLE.csv');
+T = readtable("16Beers.xlsx");
+Beernames=table2array(T(1:end,1));
+
+T=T(1:end,2:end)
+T = table2array(T)
 
 %% Create a scree plot
 A = [0 0 0 0 0 0];
 for c = 1:6
-    [Y1,stress1,eigvals1] = mdscale(Test1,c);
+    [Y1,stress1,eigvals1] = mdscale(T,c);
     A(c)=stress1;
 end
 fprintf('Stress for Test1: %.4f\n',A);
@@ -25,7 +30,7 @@ hold off
 
 %% - Multidimensional scaling plot
 
-[Y1,stress1,eigvals1] = mdscale(Test1,3);
+[Y1,stress1,eigvals1] = mdscale(T,3);
 figure;
 plot3(Y1(:,1),Y1(:,2),Y1(:,3),'o');
 hold on
@@ -36,18 +41,28 @@ for i=1:length(Y1)
     plot3(together(:,1),together(:,2),together(:,3),'--oblack')
 end
 title("Multidimensional scaling of napping results");
-text(Y1(:,1)+1,Y1(:,2),Y1(:,3),Test1order)
+text(Y1(:,1)+1,Y1(:,2),Y1(:,3),Beernames)
 xlabel('Fruityness (Frugtighed) -->') %Dim1
 ylabel('<-- Power (Kraftighed)') %Dim2
 zlabel('Color (Farve)-->') %Dim3
 grid on
+
+% Run a loop for a while
+for ii = 1:370*4
+   
+    % Draw our plots
+    drawnow;
+    view(gca,[ii/4, 35]);
+
+    
+end
 hold off
 
 
 
 %% Shepards plot for testing if the model is off from the original data
 
-Test1_vector=squareform(Test1);
+Test1_vector=squareform(T);
 % Calculate pairwise distances from original data
 
 % and make a Shepard plot of the results.
