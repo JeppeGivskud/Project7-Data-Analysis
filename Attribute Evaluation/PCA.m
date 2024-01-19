@@ -102,7 +102,7 @@ cumulative_percent_explained_rotated=cumsum(percent_explained_rotated);
 bar(percent_explained_rotated)
 hold on
 plot([0:length(cumulative_percent_explained_rotated)],[0 cumulative_percent_explained_rotated])
-axis([0 6 0 105])
+axis([0 4 0 105])
 xlabel('Principal Component (rotated)')
 ylabel('Variance Explained (%)')
 set(gca,'Xtick',[1 2 3 4 5])
