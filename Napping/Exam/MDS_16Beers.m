@@ -46,13 +46,14 @@ xlabel('Fruityness (Frugtighed) -->') %Dim1
 ylabel('<-- Power (Kraftighed)') %Dim2
 zlabel('Color (Farve)-->') %Dim3
 grid on
+axis([-30 30 -25 25 -15 20]);
 
 % Run a loop for a while
-for ii = 1:370*4
+for ii = 1:5000
    
     % Draw our plots
     drawnow;
-    view(gca,[ii/4, 35]);
+    view(gca,[ii, 35]);
 
     
 end
