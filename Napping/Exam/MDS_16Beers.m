@@ -49,38 +49,46 @@ end
 title("Multidimensional scaling of napping results");
 %text(Y1(:,1)+1,Y1(:,2),Y1(:,3),Beernames)
 
-xlabel('Fruityness (Frugtighed) -->') %Dim1
-ylabel('<-- Power (Kraftighed)') %Dim2
-zlabel('Color (Farve)-->') %Dim3
+%xlabel('Fruityness (Frugtighed) -->') %Dim1
+%ylabel('<-- Power (Kraftighed)') %Dim2
+%zlabel('Color (Farve)-->') %Dim3
 grid on
 axis([-30 30 -25 25 -15 20]);
 
-% Run a loop for a while
-for ii = 1:5000
-   
-    % Draw our plots
-    drawnow;
-    view(gca,[ii, 35]);
-
-    pause(0.2)
-    
-end
 hold off
 
+%%
+% Run a loop for a while
+%for ii = 1:5000
+   
+    % Draw our plots
+  %  drawnow;
+  %  view(gca,[ii, 35]);
 
+  %  pause(0.2)
+    
+%end
+%%
 
 %% Shepards plot for testing if the model is off from the original data
+% straight line
+x=0:50;
+y=x
 
 Test1_vector=squareform(T);
 % Calculate pairwise distances from original data
 
 % and make a Shepard plot of the results.
-[Y,stress,disparities] = mdscale(Test1_vector,3);
+[Y,stress,disparities] = mdscale(Test1_vector,3,'Start','random');
 distances = pdist(Y);
 [dum,ord] = sortrows([disparities(:) Test1_vector(:)]);
 figure;
+hold on
+%line([0 0],[50 50],'b--')
 plot(Test1_vector,distances,'bo', ...
 Test1_vector(ord),disparities(ord),'r.-');
-xlabel('Dissimilarities'); ylabel('Distances/Disparities')
-legend({'Distances' 'Disparities'},'Location','NW');
+plot(x,y,'m-')
 
+xlabel('Dissimilarities'); ylabel('Distances/Disparities')
+legend({'Distances' 'Disparities' 'x=y'},'Location','NW');
+hold off
